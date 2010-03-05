@@ -1,0 +1,2 @@
+db_module=ratemycourses.model
+history_dir=$base/ratemycourses/sqlobject-history
