@@ -1,0 +1,142 @@
+body {
+	margin: 0 0 1em 0;
+	padding: 0;
+	color: black;
+	background-color: #eee;
+	line-height: 130%;
+	/*font-family: arial, helvetica, verdana, tahoma, sans-serif;*/
+	font-family: "Lucida Grande", "Lucida Sans Unicode", geneva, verdana, sans-serif;
+	text-align: center;
+}
+
+#wrapper-header {	background: #222; }
+
+#header {
+	background: #222 url('../images/header_inner.png') center no-repeat;
+	width: 75%;
+	height: 125px;
+	line-height: 125px;
+	margin: 0 auto;
+	border-left: 1px solid #707070;
+	border-right: 1px solid #707070;
+	text-align: left;
+}
+
+#header h1 {
+	margin: 0;
+	padding: 0;
+	color: #eee;
+	font-size: 220%;
+	padding-left: 10px;
+	letter-spacing: -1px;
+}
+
+#wrapper-menu {
+	background: #0070FF url('../images/menu-background.png') top left repeat-x;
+	float: left;
+	width: 100%;
+}
+
+#menu {
+	width: 75%;
+	margin: 0 auto;
+	font-size: 95%;
+	white-space: nowrap; /* stops half a menu link dropping to next line. Instead, the whole link will drop. This only happens if you have a lot of menu links, and large text size */
+	padding-right: 0px;	/* The menu far left, and far right borders are not quite lining up in non IE browsers for some reason. This makes it less noticable */
+}
+
+#searchbox {
+	float:right;
+	font-size:100%;
+	width: 201px;
+	height: 29px;
+	border-right: 1px solid #707070;
+	background: url('../images/searchbg.png');
+}
+
+#searchbox #s {
+    float: left;
+    padding: 0;
+    margin: 6px 0 0 6px;
+    border: 0;
+    width: 159px;
+    background: none;
+}
+
+#searchbox #go {
+    float: right;
+    margin: 3px 4px 0 0;
+}
+
+* html #menu { padding-right: 0; } /* See above comment. This re-adjusts IE to the above padding */
+
+#menu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	float: left;
+	border-left: 1px solid #707070;
+	width: 30em;
+	font-size: 16pt;
+}
+
+#menu li { display: inline; }
+
+#menu a:link, #menu a:visited {
+	padding: 0.25em 1em;
+	background: transparent;
+	color: #fff;
+	text-decoration: none;
+	float: left;
+	border-right: 1px solid #707070;
+}
+
+#menu a:hover {
+	background: #9FC9FF url('../images/menu-hover.png') repeat-x;
+	color: #fff;
+}
+
+#content {
+	width: 73%; /* 73% because it has 1% padding on each side, which brings it to 75% wide */
+	margin: 0 auto;
+	padding: 3.5em 1% 20px 1%;
+	border-left: 1px solid #bbb;
+	border-right: 1px solid #bbb;
+	background: white;
+	font-size: 90%;
+	text-align: left;
+}
+
+* html #content { padding-top: 1.8em; } /* Set padding top in IE to 20px */
+
+#footer {
+	margin: 0 auto;
+	padding: 2px 1%;
+	width: 73%;
+	text-align: right;
+	color: white;
+	letter-spacing: 0.15em;
+	background: #0070FF url('../images/menu-background.png') top left repeat-x;
+	border: 1px solid #369;
+	font-size: 80%;
+}
+
+h2 {
+	color: #666;
+	padding-bottom: 3px;
+	border-bottom: 1px solid #a0c80e;
+	font-size: 150%;
+	letter-spacing: -1px;
+}
+
+a:link, a:visited {
+	color: #369;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #000;
+	text-decoration: underline;
+}
+
+p { margin-left: 1em; }

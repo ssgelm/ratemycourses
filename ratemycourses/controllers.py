@@ -102,7 +102,7 @@ class Root(controllers.RootController):
 		return dict(tags=tags)
 	
 	@expose("ratemycourses.templates.search")
-	def search(self, search):
+	def search(self, search, **kw):
 		courses = list(Course.select(LIKE(Course.q.name,'%'+search+'%')))
 		courses.extend(list(Course.select(LIKE(Course.q.description,'%'+search+'%'))))
 		tags = Tag.select(LIKE(Tag.q.name,'%'+search+'%'))
