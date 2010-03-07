@@ -4,6 +4,7 @@ from ratemycourses.model import *
 from turbogears import identity, redirect, visit
 from cherrypy import request, response
 import tw.forms as twf
+#import tw.rating as twr
 from formencode.schema import Schema
 import types, math
 from sqlobject import LIKE
@@ -23,12 +24,14 @@ class Root(controllers.RootController):
 		
 		identity.current_provider.validate_identity(user, "password", visit_key)
 		
-		#flash('You are now logged in as %s!' % user)
+		flash('You are now logged in as %s!' % user)
 		
 		if not forward_url:
 			forward_url = request.path_info
 		if not forward_url or forward_url == '/login' or forward_url == tg.url('/login'):
 			forward_url = request.headers.get("Referer", "/")
+		if 'cosign' in forward_url:
+			redirect('/')
 		redirect(tg.url(forward_url, kw))
 		
 		#if forward_url:
@@ -132,6 +135,9 @@ class Root(controllers.RootController):
 	
 	@expose("ratemycourses.templates.search")
 	def search(self, search, **kw):
+		if search == 'Search...' or search == '' or len(search) < 3:
+			flash('You must enter a search term of at least 3 characters')
+			redirect(request.headers.get("Referer", "/"))
 		courses = list(Course.select(LIKE(Course.q.name,'%'+search+'%')))
 		courses.extend(list(Course.select(LIKE(Course.q.description,'%'+search+'%'))))
 		tags = Tag.select(LIKE(Tag.q.name,'%'+search+'%'))
