@@ -3,4 +3,5 @@ start-ratemycourses = ratemycourses.commands:start
 
 [turbogears.identity.provider]
 soldapprovider = ratemycourses.soldapprovider:SoLdapIdentityProvider
+socosignprovider = ratemycourses.socosignprovider:SoCosignIdentityProvider
 

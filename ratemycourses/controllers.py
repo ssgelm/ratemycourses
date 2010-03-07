@@ -1,7 +1,7 @@
 import turbogears as tg
 from turbogears import controllers, expose, flash, widgets, validators, validate, error_handler
 from ratemycourses.model import *
-from turbogears import identity, redirect
+from turbogears import identity, redirect, visit
 from cherrypy import request, response
 import tw.forms as twf
 from formencode.schema import Schema
@@ -18,31 +18,54 @@ class Root(controllers.RootController):
 
 	@expose(template="ratemycourses.templates.login")
 	def login(self, forward_url=None, *args, **kw):
+		user = request.headers.get("X-Forwarded-User", None)
+		visit_key = visit.current().key
+		
+		identity.current_provider.validate_identity(user, "password", visit_key)
+		
+		redirect(tg.url(forward_url or '/', kw))
+		
+		#if forward_url:
+		#	if isinstance(forward_url, list):
+		#		forward_url = forward_url.pop(0)
+		#	else:
+		#		del request.params['forward_url']
+      #
+		#if not identity.current.anonymous and identity.was_login_attempted() \
+		#		and not identity.get_identity_errors():
+		#	redirect(tg.url(forward_url or '/', kw))
+      #
+		#if identity.was_login_attempted():
+		#	msg = _("The credentials you supplied were not correct or "
+		#		   "did not grant access to this resource.")
+		#elif identity.get_identity_errors():
+		#	msg = _("Please log in using your Brandeis UNET ID and password.")
+		#else:
+		#	msg = _("Please log in using your Brandeis UNET ID and password.")
+		#	if not forward_url:
+		#		forward_url = request.headers.get("Referer", "/")
+      #
+		#response.status = 401
+		#return dict(logging_in=True, message=msg,
+		#	forward_url=forward_url, previous_url=request.path_info,
+		#	original_parameters=request.params)
+	
+	@expose()
+	def login_user(self):
+		"""Associate given user with current visit & identity."""
+		
+		try:
+			link = VisitIdentity.by_visit_key(visit_key)
+		except SQLObjectNotFound:
+			link = None
 
-		if forward_url:
-			if isinstance(forward_url, list):
-				forward_url = forward_url.pop(0)
-			else:
-				del request.params['forward_url']
-
-		if not identity.current.anonymous and identity.was_login_attempted() \
-				and not identity.get_identity_errors():
-			redirect(tg.url(forward_url or '/', kw))
-
-		if identity.was_login_attempted():
-			msg = _("The credentials you supplied were not correct or "
-				   "did not grant access to this resource.")
-		elif identity.get_identity_errors():
-			msg = _("Please log in using your Brandeis UNET ID and password.")
+		if not link:
+			link = VisitIdentity(visit_key=visit_key, user_id=user.user_id)
 		else:
-			msg = _("Please log in using your Brandeis UNET ID and password.")
-			if not forward_url:
-				forward_url = request.headers.get("Referer", "/")
+			link.user_id = user.user_id
 
-		response.status = 401
-		return dict(logging_in=True, message=msg,
-			forward_url=forward_url, previous_url=request.path_info,
-			original_parameters=request.params)
+		user_identity = identity.current_provider.load_identity(visit_key)
+		identity.set_current_identity(user_identity)
 
 	def makeCloud(self, steps, input):
 		if not type(input) == types.ListType or len(input) <= 0 or steps <= 0:
@@ -319,7 +342,7 @@ class Root(controllers.RootController):
 	@expose()
 	def logout(self):
 		identity.current.logout()
-		redirect("/")
+		redirect("https://login.brandeis.edu/cgi-bin/logout?verify=Logout")
 
 class ReviewFields(widgets.WidgetsList):
 	"""The WidgetsList defines the fields of the form."""

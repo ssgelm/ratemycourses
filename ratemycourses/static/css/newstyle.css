@@ -20,6 +20,26 @@ body {
 	border-left: 1px solid #707070;
 	border-right: 1px solid #707070;
 	text-align: left;
+	position: relative;
+}
+
+#pageLogin {
+	text-align: right;
+	color: #eee;
+	font-weight: bold;
+	position: fixed;
+	width:75%;
+	font-size:18px;
+	line-height: 20px;
+	width:auto;
+	height:auto;
+	position: absolute; bottom: 0; right: 0;
+	padding:4px;
+	background-color:rgba(0,0,0,0.5);
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
 }
 
 #header h1 {
@@ -76,8 +96,8 @@ body {
 	list-style: none;
 	float: left;
 	border-left: 1px solid #707070;
-	width: 30em;
-	font-size: 16pt;
+	/*width: 34em;*/
+	font-size: 12pt;
 }
 
 #menu li { display: inline; }

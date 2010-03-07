@@ -72,7 +72,8 @@ setup(
             'start-ratemycourses = ratemycourses.commands:start',
         ],
 		'turbogears.identity.provider': [
-		         'soldapprovider = ratemycourses.soldapprovider:SoLdapIdentityProvider'
+		         'soldapprovider = ratemycourses.soldapprovider:SoLdapIdentityProvider',
+		         'socosignprovider = ratemycourses.socosignprovider:SoCosignIdentityProvider'
 		],
     },
     # Uncomment next line and create a default.cfg file in your project dir

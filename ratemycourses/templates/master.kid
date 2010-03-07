@@ -7,28 +7,18 @@
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
     <title py:replace="''">Your title goes here</title>
     <meta py:replace="item[:]" name="description" content="master template"/>
-    <!-- <style type="text/css" media="screen">
-        #pageLogin
-        {
-            font-family: verdana;
-            text-align: right;
-			width: 777px;
-			margin: 0 auto 0 auto;
-        }
-    </style> -->
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/newstyle.css"
         py:attrs="href=tg.url('/static/css/newstyle.css')"/>
 </head>
 
 <body py:match="item.tag=='{http://www.w3.org/1999/xhtml}body'" py:attrs="item.items()">
-    <div py:if="tg.config('identity.on') and not defined('logging_in')" id="pageLogin">
-        <span py:if="not tg.identity.anonymous">
-            Logged in as: ${tg.identity.user.display_name or tg.identity.user.user_name}
-        </span>
-    </div>
-
 	<div id="wrapper-header">
 		<div id="header">
+			<div py:if="tg.config('identity.on') and not defined('logging_in')" id="pageLogin">
+		        <span py:if="not tg.identity.anonymous" id="outline">
+		            Logged in as: ${tg.identity.user.display_name+' ('+tg.identity.user.user_name+')' or tg.identity.user.user_name}
+		        </span>
+		    </div>
 			<h1>RateMyCourses</h1>
 		</div>
 	</div>
@@ -40,11 +30,11 @@
 				<li><a href="${tg.url('/courses')}">Courses</a></li>
 				<li><a href="${tg.url('/tags')}">Tags</a></li>
 				<li><a href="${tg.url('/locker')}">Locker</a></li>
-				<span py:if="tg.config('identity.on') and not defined('logging_in')">
-					<span py:if="tg.identity.anonymous">
+				<span py:if="tg.config('identity.on') and not defined('logging_in')" py:strip="True">
+					<span py:if="tg.identity.anonymous" py:strip="True">
 						<li><a href="${tg.url(tg.identity.login_url)}">Login</a></li>
 					</span>
-					<span py:if="not tg.identity.anonymous">
+					<span py:if="not tg.identity.anonymous" py:strip="True">
 						<li><a href="${tg.url('/editprofile')}">Edit Profile</a></li>
 						<li><a href="${tg.url('/logout')}">Logout</a></li>
 					</span>
