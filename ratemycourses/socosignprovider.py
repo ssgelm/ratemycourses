@@ -3,6 +3,7 @@ import ldap
 import turbogears.config
 from turbogears.identity.soprovider import *
 from turbogears.database import session
+from turbogears import redirect
 from cherrypy import request, response
 from ratemycourses.model import *
 from sqlobject import SQLObjectNotFound
@@ -28,6 +29,9 @@ class SoCosignIdentityProvider(SqlObjectIdentityProvider):
 		log.info("autocreate :: %s" % self.autocreate)
 
 	def validate_identity(self, user_name, password, visit_key):
+		if request.headers.get("X-Forwarded-User", None) == '(null)':
+			redirect("/login")
+			return None
 		objects = self.validate_password(None, user_name, password)
 		if objects:
 			try:

@@ -23,7 +23,13 @@ class Root(controllers.RootController):
 		
 		identity.current_provider.validate_identity(user, "password", visit_key)
 		
-		redirect(tg.url(forward_url or '/', kw))
+		#flash('You are now logged in as %s!' % user)
+		
+		if not forward_url:
+			forward_url = request.path_info
+		if not forward_url or forward_url == '/login' or forward_url == tg.url('/login'):
+			forward_url = request.headers.get("Referer", "/")
+		redirect(tg.url(forward_url, kw))
 		
 		#if forward_url:
 		#	if isinstance(forward_url, list):
