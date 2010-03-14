@@ -1,5 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<?python import sitetemplate ?>
+<?python import sitetemplate
+from cherrypy import request as cp_request
+from cherrypy import session as cp_session
+?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://purl.org/kid/ns#"
     py:extends="sitetemplate">
 
@@ -50,14 +53,26 @@
 	</div>
 
     <div id="content">
+		<!-- Flash blocks -->
 		<div id="status_block" class="flash"
             py:if="value_of('tg_flash', None)" py:content="tg_flash"></div>
+		<div py:if="cp_session.has_key('flash2')" id="flash2">
+			<div py:for="message in cp_session.get('flash2')" class="message ${message.css}" id="flash2_${message.md5}">
+				<div py:if="message.hideable" class="hide">
+					<a href="#" onclick="javascript:MochiKit.Visual.fade('flash2_${message.md5}', {'duration':0.25});">Hide</a>
+				</div>
+				<span py:if="message.html" py:content="XML(message.message)" />
+				<span py:if="not message.html" py:content="message.message" />
+			</div>
+		</div>
+		
         <div py:replace="[item.text]+item[:]">page content</div>
     </div>
 
     <div id="footer">
-        <p>Disclaimer: This website is a demonstration of our term project for CS125: Human-Computer Interaction.  It is a work in progress and not all features will work as planned, though we're working on it.</p>
-		<p>&copy; 2010 Stephen Gelman, Ravi Kotecha, Andy Lewis, Kevin Weaver</p>
+        <p>Disclaimer: This website is a demonstration of our term project for CS125: Human-Computer Interaction in Spring 2010. It is based on research of computer-supported collaboration and interface design.</p>
+		<p>It is a work in progress and not all features will work as planned. We're working on it.</p>
+		<p><a href="/static/feedback.html" target="_blank">Questions/Comments? Click here</a>. &copy; 2010 Stephen Gelman, Ravi Kotecha, Andy Lewis, Kevin Weaver</p>
     </div>
 </body>
 

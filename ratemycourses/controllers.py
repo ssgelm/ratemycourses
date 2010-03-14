@@ -2,12 +2,16 @@ import turbogears as tg
 from turbogears import controllers, expose, flash, widgets, validators, validate, error_handler
 from ratemycourses.model import *
 from turbogears import identity, redirect, visit
-from cherrypy import request, response
+from cherrypy import request, response, session
+from cherrypy.lib import httptools
+import time
 import tw.forms as twf
 #import tw.rating as twr
 from formencode.schema import Schema
 import types, math
 from sqlobject import LIKE
+import md5
+import cherrypy
 # from ratemycourses import json
 import logging
 log = logging.getLogger("ratemycourses.controllers")
@@ -24,7 +28,8 @@ class Root(controllers.RootController):
 		
 		identity.current_provider.validate_identity(user, "password", visit_key)
 		
-		flash('You are now logged in as %s!' % user)
+		f = Flash2()
+		f.ok('You are now logged in as %s!' % user, hideable=True)
 		
 		if not forward_url:
 			forward_url = request.path_info
@@ -33,49 +38,7 @@ class Root(controllers.RootController):
 		if 'cosign' in forward_url:
 			redirect('/')
 		redirect(tg.url(forward_url, kw))
-		
-		#if forward_url:
-		#	if isinstance(forward_url, list):
-		#		forward_url = forward_url.pop(0)
-		#	else:
-		#		del request.params['forward_url']
-      #
-		#if not identity.current.anonymous and identity.was_login_attempted() \
-		#		and not identity.get_identity_errors():
-		#	redirect(tg.url(forward_url or '/', kw))
-      #
-		#if identity.was_login_attempted():
-		#	msg = _("The credentials you supplied were not correct or "
-		#		   "did not grant access to this resource.")
-		#elif identity.get_identity_errors():
-		#	msg = _("Please log in using your Brandeis UNET ID and password.")
-		#else:
-		#	msg = _("Please log in using your Brandeis UNET ID and password.")
-		#	if not forward_url:
-		#		forward_url = request.headers.get("Referer", "/")
-      #
-		#response.status = 401
-		#return dict(logging_in=True, message=msg,
-		#	forward_url=forward_url, previous_url=request.path_info,
-		#	original_parameters=request.params)
 	
-	@expose()
-	def login_user(self):
-		"""Associate given user with current visit & identity."""
-		
-		try:
-			link = VisitIdentity.by_visit_key(visit_key)
-		except SQLObjectNotFound:
-			link = None
-
-		if not link:
-			link = VisitIdentity(visit_key=visit_key, user_id=user.user_id)
-		else:
-			link.user_id = user.user_id
-
-		user_identity = identity.current_provider.load_identity(visit_key)
-		identity.set_current_identity(user_identity)
-
 	def makeCloud(self, steps, input):
 		if not type(input) == types.ListType or len(input) <= 0 or steps <= 0:
 			raise InvalidInputException,\
@@ -107,7 +70,7 @@ class Root(controllers.RootController):
 		tagcloud = self.makeCloud(5, catTag)
 		fontSizes = { '1':'12px', '2':'14px', '3':'16px', '4':'20px', '5':'24px' }
 		return dict(topcourses=topcourses, tagcloud=tagcloud, fontSizes=fontSizes)
-
+	
 	@expose("ratemycourses.templates.courses")
 	def courses(self, subject=None):
 		if subject:
@@ -136,7 +99,8 @@ class Root(controllers.RootController):
 	@expose("ratemycourses.templates.search")
 	def search(self, search, **kw):
 		if search == 'Search...' or search == '' or len(search) < 3:
-			flash('You must enter a search term of at least 3 characters')
+			f = Flash2()
+			f.error('You must enter a search term of at least 3 characters',hideable=True)
 			redirect(request.headers.get("Referer", "/"))
 		courses = list(Course.select(LIKE(Course.q.name,'%'+search+'%')))
 		courses.extend(list(Course.select(LIKE(Course.q.description,'%'+search+'%'))))
@@ -243,7 +207,8 @@ class Root(controllers.RootController):
 		thisUser = identity.current.user
 		thisUser.display_name = alias
 		thisUser.about_me = aboutMe
-		flash("Profile Updated!")
+		f = Flash2()
+		f.ok("Profile Updated!", hideable=True)
 		raise redirect('/')
 
 	@validate(form=addreview_form)
@@ -253,21 +218,23 @@ class Root(controllers.RootController):
 	def savereview(self, classid, rating, review, professor):
 		thisClass = Course.select(Course.q.id==classid)
 		review = Review(score=int(rating), num_liked=0, num_rated=0, professor=professor, contents=review, reviewer=identity.current.user, course=thisClass[0])
-		flash("Review Added!")
+		f = Flash2()
+		f.ok("Review Added!", hideable=True)
 		myRedirect = "/course/"+str(classid)
 		raise redirect(myRedirect)
 	
 	@identity.require(identity.not_anonymous())
 	@expose()
 	def addtolocker(self, classid):
+		f = Flash2()
 		thisClass = Course.select(Course.q.id==classid)[0]
 		thisUser = identity.current.user
 		try:
 			thisUser.locker.index(thisClass)
-			flash(thisClass.dept+" "+thisClass.num+": "+thisClass.name+" Was Already In Your Locker.")
+			f.ok(thisClass.dept+" "+thisClass.num+": "+thisClass.name+" Was Already In Your Locker.", hideable=True)
 		except ValueError:
 			thisUser.addCourse(thisClass)
-			flash(thisClass.dept+" "+thisClass.num+": "+thisClass.name+" Has Been Added to Your Locker!")
+			f.ok(thisClass.dept+" "+thisClass.num+": "+thisClass.name+" Has Been Added to Your Locker!", hideable=True)
 		myRedirect = "/course/"+str(classid)
 		raise redirect(myRedirect)
 	
@@ -284,7 +251,8 @@ class Root(controllers.RootController):
 	def flagreview(self, reviewid, classid):
 		thisReview = Review.select(Review.q.id==reviewid)[0]
 		thisReview.flagged += 1
-		flash("Rating flagged")
+		f = Flash2()
+		f.info("Rating flagged", hideable=True)
 		myRedirect = "/course/"+str(classid)
 		raise redirect(myRedirect)
 	
@@ -320,7 +288,8 @@ class Root(controllers.RootController):
 				tag = tag[0].upper()+tag[1:]
 			temp = Tag(name=tag)
 		thisCourse[0].addTag(Tag.byName(tag))
-		flash("Tag "+tag+" Added")
+		f = Flash2()
+		f.ok("Tag "+tag+" Added", hideable=True)
 		myRedirect = "/course/"+str(classid)
 		raise redirect(myRedirect)
 
@@ -333,7 +302,8 @@ class Root(controllers.RootController):
 				Tag.byName(tag)
 				thisCourse = Course.select(Course.q.id==classid)
 				thisCourse[0].removeTag(Tag.byName(tag))
-				flash("Tag "+tag+" Removed")
+				f = Flash2()
+				f.ok("Tag "+tag+" Removed", hideable=True)
 			except SQLObjectNotFound:
 				True
 		myRedirect = "/course/"+str(classid)
@@ -346,7 +316,8 @@ class Root(controllers.RootController):
 		if(thisUser.admin):
 			thisReview = Review.select(Review.q.id==reviewid)[0]
 			thisReview.destroySelf()
-			flash("Review deleted")
+			f = Flash2()
+			f.ok("Review deleted", hideable=True)
 		myRedirect = "/course/"+str(classid)
 		raise redirect(myRedirect)
 
@@ -363,3 +334,53 @@ class ReviewFields(widgets.WidgetsList):
 	professor = widgets.TextField(validator=validators.NotEmpty())
 	review = widgets.TextArea(validator=validators.NotEmpty())
 
+class Flash2Message:
+	def __init__(self, msg, cls='info', html=False, hideable=False):
+		self.message = msg
+		self.css = cls
+		self.html = html
+		self.hideable = hideable
+		self.md5 = md5.md5(self.message).hexdigest()
+	
+
+class Flash2:
+	def __init__(self):
+		self.messages = []
+		self.messages_dict = {'info':[], 'warning':[], 'error':[], 'ok':[]}
+		self.generator = self._generator() # use f2.generator.next() to get messages
+		self.next = self._generator # next() method to make class iterable
+	
+	def __iter__(self):
+		return self.generator
+	
+	def add_message(self, msg, cls, html=False, growl=False, hideable=False):
+		m = Flash2Message(msg, cls, html, hideable)
+		self.messages.append(m)
+		if cls not in self.messages_dict:
+			self.messages_dict[cls] = []
+		self.messages_dict[cls].append(m)
+		cherrypy.session['flash2'] = self # stick the generator in the TG/CP session; use it in master template
+	
+	def _generator(self):
+		"""
+		Build a generator for getting messages from a Flash2 instance
+		"""
+		while(1):
+			try:
+				m = self.messages.pop(0) # pop the first Flash2Message in the list
+				yield m
+			except IndexError:
+				raise StopIteration
+	
+	def info(self, msg, html=False, hideable=False, growl=False):
+		self.add_message(msg, 'info', html, growl, hideable)
+	
+	def warning(self, msg, html=False, hideable=False, growl=False):
+		self.add_message(msg, 'warning', html, growl, hideable)
+	
+	def error(self, msg, html=False, hideable=False, growl=False):
+		self.add_message(msg, 'error', html, growl, hideable)
+	
+	def ok(self, msg, html=False, hideable=False, growl=False):
+		self.add_message(msg, 'ok', html, growl, hideable)
+	

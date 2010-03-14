@@ -141,6 +141,11 @@ body {
 	font-size: 80%;
 }
 
+#footer a {
+	color: #FFF;
+	text-decoration: underline;
+}
+
 h2 {
 	color: #666;
 	padding-bottom: 3px;
@@ -182,4 +187,69 @@ p { margin-left: 1em; }
 .fielderror {
     color: red;
     font-weight: bold;
+}
+
+#flash2 .message {
+  /* base styles for all flash2 messages */
+  border-width: 1px;
+  border-style: solid;
+  margin: 0.5em auto 0.5em auto;
+  padding: 15px 10px 15px 55px;
+  min-height: 50px;
+  width: 450px;
+  font-weight: bolder;
+  vertical-align: center;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  border-radius: 5px;
+  position: relative;
+}
+#flash2 .error {
+  background: url('/static/images/error.png') 6px center no-repeat;
+  padding-left: 60px;
+  background-color: #fdd; /* red */
+  border-color: #f00;
+}
+#flash2 .warning {
+  background-color: #ffd; /* yellow? */
+  border-color: #ff0;
+}
+#flash2 .info {
+  padding-left: 60px;
+  background: url(/static/images/info.png) 8px center no-repeat;
+  background-color: #eeeeff;
+  border-color: #bbd;
+}
+#flash2 .ok {
+  padding-left: 60px;
+  background: url(/static/images/ok.png) 8px center no-repeat;
+  background-color: #cceecc;
+  border-color: #81db28;
+}
+#flash2 .bug {
+  padding-left: 60px;
+  /*background: url(/static/images/bug001.gif) .2em center no-repeat;*/
+  background-color: #fdd; /* red */
+  border-color: #f00;
+}
+#flash2 .construction {
+  padding-left: 60px;
+  /*background: url(/static/images/construction1.gif) .2em center no-
+repeat;*/
+  background-color: #ffd; /* yellow? */
+  border-color: #ff0;
+}
+#flash2 .feed {
+  padding-left: 60px;
+  /*background: url(/static/images/feed-icon-24x24.png) .2em center no-
+repeat;*/
+  background-color: #ffd; /* yellow? */
+  border-color: #ff8509;
+}
+#flash2 .message .hide {
+  float: right;
+  font-size: 85%;
+  position:absolute; bottom: 0; right: 0;
+  padding:4px;
 }
