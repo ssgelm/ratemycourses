@@ -23,7 +23,7 @@ __connection__ = hub = PackageHub('ratemycourses')
 class Tag(SQLObject):
 	name = UnicodeCol(alternateID = True, length = 255)
 	created = DateTimeCol(default=datetime.now)
-	courses = RelatedJoin('Course')
+	courses = RelatedJoin('Course', orderBy=['dept', 'num'])
 
 # Review: id, score, num_liked, num_rated, professor, reviewer
 class Review(SQLObject):
@@ -127,7 +127,7 @@ class User(SQLObject):
 	realname = BoolCol(default=False)
 	reviews = MultipleJoin('Review', joinColumn='reviewer_id')
 
-	locker = RelatedJoin('Course', joinColumn='tg_user_id', otherColumn='course_id', intermediateTable='course_tg_user')
+	locker = RelatedJoin('Course', joinColumn='tg_user_id', otherColumn='course_id', intermediateTable='course_tg_user', orderBy=['dept', 'num'])
 
 	admin = BoolCol(default=False)
 

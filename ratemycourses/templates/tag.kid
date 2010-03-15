@@ -11,11 +11,23 @@
 	<h1><span py:replace="name">Tag</span></h1>
 	<hr />
 	<p><b>Courses tagged with <span py:replace="name">Tag</span>:</b></p>
+	<p><b><a href="${tg.paginate.get_href(1)}" py:content="'&laquo;'" />&nbsp;<a py:strip="tg.paginate.current_page == 1"
+	href="${tg.paginate.get_href(tg.paginate.current_page-1)}" py:content="'&larr;'" /></b>&nbsp;
+		<b py:for="page in tg.paginate.pages">
+	    <a py:strip="page == tg.paginate.current_page"
+	        href="${tg.paginate.get_href(page)}" py:content="page"/></b><b>&nbsp;<a py:strip="tg.paginate.current_page == tg.paginate.page_count"
+			href="${tg.paginate.get_href(tg.paginate.current_page+1)}" py:content="'&rarr;'" />&nbsp;<a href="${tg.paginate.get_href(tg.paginate.page_count)}" py:content="'&raquo;'" /></b></p>
 	<ul>
-		<span py:for="i in range(0,len(courses))">
-			<li><a href="${tg.url('/course/' + str(courses[i].id))}" py:content="str(courses[i].dept+' '+courses[i].num+': '+courses[i].name)">Class</a></li>
+		<span py:for="course in courses">
+			<li><a href="${tg.url('/course/' + str(course.id))}" py:content="course.dept+' '+course.num+': '+course.name">Class</a></li>
 		</span>
 	</ul>
+	<p><b><a href="${tg.paginate.get_href(1)}" py:content="'&laquo;'" />&nbsp;<a py:strip="tg.paginate.current_page == 1"
+	href="${tg.paginate.get_href(tg.paginate.current_page-1)}" py:content="'&larr;'" /></b>&nbsp;
+		<b py:for="page in tg.paginate.pages">
+	    <a py:strip="page == tg.paginate.current_page"
+	        href="${tg.paginate.get_href(page)}" py:content="page"/></b><b>&nbsp;<a py:strip="tg.paginate.current_page == tg.paginate.page_count"
+			href="${tg.paginate.get_href(tg.paginate.current_page+1)}" py:content="'&rarr;'" />&nbsp;<a href="${tg.paginate.get_href(tg.paginate.page_count)}" py:content="'&raquo;'" /></b></p>
 </div>
 
 </body>

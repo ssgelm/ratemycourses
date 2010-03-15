@@ -27,12 +27,23 @@ function nav()
 			<option py:for="dept in depts" py:value="dept" py:content="dept">DEPT</option>
 		</select>
 	</form></p>
+	<p><b><a href="${tg.paginate.get_href(1)}" py:content="'&laquo;'" />&nbsp;<a py:strip="tg.paginate.current_page == 1"
+	href="${tg.paginate.get_href(tg.paginate.current_page-1)}" py:content="'&larr;'" /></b>&nbsp;
+		<b py:for="page in tg.paginate.pages">
+	    <a py:strip="page == tg.paginate.current_page"
+	        href="${tg.paginate.get_href(page)}" py:content="page"/></b><b>&nbsp;<a py:strip="tg.paginate.current_page == tg.paginate.page_count"
+			href="${tg.paginate.get_href(tg.paginate.current_page+1)}" py:content="'&rarr;'" />&nbsp;<a href="${tg.paginate.get_href(tg.paginate.page_count)}" py:content="'&raquo;'" /></b></p>
 	<ul>
-		<li py:for="i in range(0,len(idlist))">
-			<a href="${tg.url('/course/' + str(idlist[i]))}" py:content="deptlist[i]+' '+numlist[i]+': '+namelist[i]">Page Name Here.</a>
+		<li py:for="course in courses">
+			<a href="${tg.url('/course/' + str(course.id))}" py:content="course.dept+' '+course.num+': '+course.name">Page Name Here.</a>
 		</li>
 	</ul>
-
+	<p><b><a href="${tg.paginate.get_href(1)}" py:content="'&laquo;'" />&nbsp;<a py:strip="tg.paginate.current_page == 1"
+	href="${tg.paginate.get_href(tg.paginate.current_page-1)}" py:content="'&larr;'" /></b>&nbsp;
+		<b py:for="page in tg.paginate.pages">
+	    <a py:strip="page == tg.paginate.current_page"
+	        href="${tg.paginate.get_href(page)}" py:content="page"/></b><b>&nbsp;<a py:strip="tg.paginate.current_page == tg.paginate.page_count"
+			href="${tg.paginate.get_href(tg.paginate.current_page+1)}" py:content="'&rarr;'" />&nbsp;<a href="${tg.paginate.get_href(tg.paginate.page_count)}" py:content="'&raquo;'" /></b></p>
 </div>
 
 </body>

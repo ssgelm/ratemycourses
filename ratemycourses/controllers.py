@@ -1,5 +1,5 @@
 import turbogears as tg
-from turbogears import controllers, expose, flash, widgets, validators, validate, error_handler
+from turbogears import controllers, expose, flash, widgets, validators, validate, error_handler, paginate
 from ratemycourses.model import *
 from turbogears import identity, redirect, visit
 from cherrypy import request, response, session
@@ -72,19 +72,14 @@ class Root(controllers.RootController):
 		return dict(topcourses=topcourses, tagcloud=tagcloud, fontSizes=fontSizes)
 	
 	@expose("ratemycourses.templates.courses")
+	@paginate('courses', limit=25, max_pages=10)
 	def courses(self, subject=None):
 		if subject:
-			idlist = [eachclass.id for eachclass in Course.select(Course.q.dept==subject)]
-			namelist = [eachclass.name for eachclass in Course.select(Course.q.dept==subject)]
-			deptlist = [eachclass.dept for eachclass in Course.select(Course.q.dept==subject)]
-			numlist = [eachclass.num for eachclass in Course.select(Course.q.dept==subject)]
+			courses = Course.select(Course.q.dept==subject)
 		else:
-			idlist = [eachclass.id for eachclass in Course.select(orderBy='dept')]
-			namelist = [eachclass.name for eachclass in Course.select(orderBy='dept')]
-			deptlist = [eachclass.dept for eachclass in Course.select(orderBy='dept')]
-			numlist = [eachclass.num for eachclass in Course.select(orderBy='dept')]
+			courses = Course.select(orderBy='dept')
 		depts = sorted(list(set([eachclass.dept for eachclass in Course.select()])))
-		return dict(idlist=idlist, namelist=namelist, deptlist=deptlist, numlist=numlist, depts=depts, currentdept=subject)
+		return dict(courses=courses, depts=depts, currentdept=subject)
 	
 	@expose("ratemycourses.templates.tags")
 	def tags(self, order="name"):
@@ -173,6 +168,7 @@ class Root(controllers.RootController):
 		return dict(name=alias, reviews=reviews, aboutMe=aboutMe, locker=locker)
 
 	@expose("ratemycourses.templates.tag")
+	@paginate('courses', limit=25, max_pages=10)
 	def tag(self, tagName):
 		thisTag = Tag.byName(tagName)
 		courses = thisTag.courses
@@ -184,7 +180,6 @@ class Root(controllers.RootController):
 		twf.TextField('professor', validator=twf.validators.UnicodeString(not_empty=True)),
 		twf.TextArea('review', validator=twf.validators.UnicodeString(not_empty=True))
 	])
-
 
 	@identity.require(identity.not_anonymous())
 	@expose("ratemycourses.templates.addreview")
