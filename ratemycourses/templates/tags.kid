@@ -15,7 +15,7 @@
 
 	<ul>
 		<li py:for="tag in tags">
-			<a href="${tg.url('/tag/' + tag[0])}" py:content="tag[0]+' ('+str(tag[1])+')'">Page Name Here.</a>
+			<a href="${tg.url('/tag/' + tag.name)}" py:content="tag.name+' ('+str(tag.count)+')'">Page Name Here.</a>
 		</li>
 	</ul>
 

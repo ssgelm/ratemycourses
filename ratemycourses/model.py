@@ -24,6 +24,10 @@ class Tag(SQLObject):
 	name = UnicodeCol(alternateID = True, length = 255)
 	created = DateTimeCol(default=datetime.now)
 	courses = RelatedJoin('Course', orderBy=['dept', 'num'])
+	
+	def _get_count(self):
+		return len(self.courses)
+	count = property(_get_count)
 
 # Review: id, score, num_liked, num_rated, professor, reviewer
 class Review(SQLObject):

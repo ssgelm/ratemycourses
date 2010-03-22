@@ -12,6 +12,7 @@ import types, math
 from sqlobject import LIKE
 import md5
 import cherrypy
+import operator
 # from ratemycourses import json
 import logging
 log = logging.getLogger("ratemycourses.controllers")
@@ -77,18 +78,15 @@ class Root(controllers.RootController):
 		if subject:
 			courses = Course.select(Course.q.dept==subject)
 		else:
-			courses = Course.select(orderBy='dept')
+			courses = Course.select(orderBy=['dept'])
 		depts = sorted(list(set([eachclass.dept for eachclass in Course.select()])))
 		return dict(courses=courses, depts=depts, currentdept=subject)
 	
 	@expose("ratemycourses.templates.tags")
 	def tags(self, order="name"):
-		taglist = [eachtag.name for eachtag in Tag.select(orderBy='name')]
-		tagcount = [len(eachtag.courses) for eachtag in Tag.select(orderBy='name')]
-		tags=[[taglist[i], tagcount[i]] for i in range(0,len(taglist))]
-		if order=="popularity":
-			tags.sort(lambda x, y: x[1]-y[1])
-			tags.reverse()
+		tags = list(Tag.select(orderBy='name'))
+		if order == 'popularity':
+			tags = sorted(tags, key=operator.attrgetter('count'), reverse=True)
 		return dict(tags=tags)
 	
 	@expose("ratemycourses.templates.search")
@@ -226,7 +224,7 @@ class Root(controllers.RootController):
 		thisUser = identity.current.user
 		try:
 			thisUser.locker.index(thisClass)
-			f.ok(thisClass.dept+" "+thisClass.num+": "+thisClass.name+" Was Already In Your Locker.", hideable=True)
+			f.warning(thisClass.dept+" "+thisClass.num+": "+thisClass.name+" Was Already In Your Locker.", hideable=True)
 		except ValueError:
 			thisUser.addCourse(thisClass)
 			f.ok(thisClass.dept+" "+thisClass.num+": "+thisClass.name+" Has Been Added to Your Locker!", hideable=True)
