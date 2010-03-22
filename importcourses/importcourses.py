@@ -4,6 +4,14 @@ from ratemycourses.model import *
 import csv
 import progress
 
+# The sql query used to produce this file is:
+#    select distinct subject,catalog_nbr,course_title_long,descrlong,crse_attr_value
+#         from soc_cls_vw natural left outer join cls_attr_vw
+#         where (acad_year=2009 or acad_year=2010) and component <> 'IND' 
+#         order by subject,catalog_nbr
+#         into outfile '/tmp/outfile.csv'
+#              fields terminated by ',' enclosed by '"' lines terminated by '\n';
+
 courses_file = 'importcourses/infiles/combined.csv'
 courses = csv.DictReader(open(courses_file),delimiter='|',quotechar='>')
 course_rows = list(courses)
@@ -21,21 +29,21 @@ ENDC = '\033[0m'
 
 # Tag mappings
 tag_maps = {'CA':'CreativeArts',
-				'FL':'ForeignLanguage',
-				'HUM':'Humanities',
-				'NW':'NonWestern',
-				'OC':'OralCommunication',
-				'PE-1':'PhysicalEducation',
-				'PE-SC':'PhysicalEducation',
-				'QR':'QuantitativeReasoning',
-				'QR1':'QuantitativeReasoningLecture',
-				'QR2':'QuantitativeReasoningLab',
-				'SN':'ScienceReq',
-				'SS':'SocialScienceReq',
-				'USEM':'USEM',
-				'USWI':'USEMPlusW',
-				'UWS':'UWS',
-				'WI':'WritingIntensive'}
+			'FL':'ForeignLanguage',
+			'HUM':'Humanities',
+			'NW':'NonWestern',
+			'OC':'OralCommunication',
+			'PE-1':'PhysicalEducation',
+			'PE-SC':'PhysicalEducation',
+			'QR':'QuantitativeReasoning',
+			'QR1':'QuantitativeReasoningLecture',
+			'QR2':'QuantitativeReasoningLab',
+			'SN':'ScienceReq',
+			'SS':'SocialScienceReq',
+			'USEM':'USEM',
+			'USWI':'USEMPlusW',
+			'UWS':'UWS',
+			'WI':'WritingIntensive'}
 
 for row in course_rows:
 	progress_meter.update(1)
