@@ -85,7 +85,7 @@ body {
 
 #searchbox #go {
     float: right;
-    margin: 3px 4px 0 0;
+    margin: 2px 4px 0 0;
 }
 
 * html #menu { padding-right: 0; } /* See above comment. This re-adjusts IE to the above padding */
@@ -135,7 +135,7 @@ body {
 	width: 73%;
 	text-align: right;
 	color: white;
-	letter-spacing: 0.15em;
+	/*letter-spacing: 0.15em;*/
 	background: #0070FF url('../images/menu-background.png') top left repeat-x;
 	border: 1px solid #369;
 	font-size: 80%;
