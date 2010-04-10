@@ -32,7 +32,7 @@ from cherrypy import session as cp_session
     			<li><a href="${tg.url('/')}">Home</a></li>
 				<li><a href="${tg.url('/courses')}">Courses</a></li>
 				<li><a href="${tg.url('/tags')}">Tags</a></li>
-				<li><a href="${tg.url('/locker')}">Locker</a></li>
+				<!--<li><a href="${tg.url('/locker')}">Locker</a></li>-->
 				<span py:if="tg.config('identity.on') and not defined('logging_in')" py:strip="True">
 					<span py:if="tg.identity.anonymous" py:strip="True">
 						<li><a href="${tg.url(tg.identity.login_url)}">Login</a></li>

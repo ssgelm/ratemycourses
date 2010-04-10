@@ -149,7 +149,7 @@ body {
 h2 {
 	color: #666;
 	padding-bottom: 3px;
-	border-bottom: 1px solid #a0c80e;
+	/*border-bottom: 1px solid #a0c80e;*/
 	font-size: 150%;
 	letter-spacing: -1px;
 }
@@ -253,3 +253,53 @@ repeat;*/
   position:absolute; bottom: 0; right: 0;
   padding:4px;
 }
+
+div#avgRating img {
+    height: 50px;
+    width: 50px;
+}
+
+a.tag {
+    border-radius: 7px;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    background-color: #0070FF;
+    padding: 5px;
+    color: white;
+}
+
+a.tag:hover {
+    background-color: SkyBlue;
+}
+
+div.orientation {
+    margin: 10px;
+    border-radius: 10%;
+    -moz-border-radius: 10% 10% 10% 0;
+    -webkit-border-radius: 10%;
+    background-color: SlateGray;
+    padding: 0;
+    color: white;
+}
+
+div.orientation div.question {
+    margin: 0;
+    border-radius: 10%;
+    -moz-border-radius: 10% 10% 0 0;
+    -webkit-border-radius: 10%;
+    background-color: black;
+    padding: 10px;
+    font-size: large;
+}
+
+div.orientation a.answer {
+    display: block;
+    clear: both;
+    width: 80%;
+    margin: 10px auto;
+    border-radius: 10%;
+    -moz-border-radius: 10%;
+    -webkit-border-radius: 10%;
+    background-color: white;
+    padding: 5px;
+    text-align: center;

@@ -21,22 +21,36 @@ function nav()
 <body>
 
 <div>
-
+    <div style="display: inline; float: left; width: 70%">
 	<h1><span py:replace="name">Class Name</span></h1>
-	<h2><span py:replace="dept">DEPT</span> <span py:replace="num">NUM</span>&nbsp;-&nbsp;<span style="font: x-small 'Lucida Grande', 'Lucida Sans Unicode', geneva, verdana, sans-serif"><a href="${tg.url('/addtolocker/' + classid)}">Add to my locker</a></span></h2>
+	<h2><span py:replace="dept">DEPT</span> <span py:replace="num">NUM</span><!--&nbsp;-&nbsp;<span style="font: x-small 'Lucida Grande', 'Lucida Sans Unicode', geneva, verdana, sans-serif"><a href="${tg.url('/addtolocker/' + classid)}">Add to my locker</a></span>--></h2>
+	</div>
+	<div id="avgRating" style="float: right; width: 30%; padding-top: 10px;">${XML(avg_score)}</div>
+	<hr style="clear:both;" />
+	<p style="margin: 2px auto;"><span style="margin-right: 12px;" py:for="i in range(0,len(sysTags))"><a class="tag" href="${tg.url('/tag/' + str(sysTags[i]))}" py:content="sysTags[i]">Tag</a></span></p>
 	<hr />
 	<p><span py:replace="description">Course description</span></p>
-	<p><b>Tags:</b>
-		<span py:for="i in range(0,len(tags))"><a href="${tg.url('/tag/' + str(tags[i].name))}" py:content="tags[i].name">Tag</a><span py:if="not tg.identity.anonymous and tg.identity.user.admin">&nbsp;<a href="${tg.url('/untagcourse/' + str(classid) + '/' + str(tags[i].name))}">(X)</a></span>, </span>
-		<form method="get" action="${tg.url('/tagcourse/' + str(classid) + '/')}" name="addtag">
-			<select name="tag" onChange="nav()">
-				<option value=''>Add Tag...</option>
-				<option py:for="i in alltags" value="${i}" py:content="i">TAG</option>
-				<option value="newtag">New Tag...</option>
-			</select>
-		</form>
+	<p><b>Tagged as:</b>
+	    <span>
+		    <span style="margin-right: 0px; padding: 5px 5px 5px 0;" py:for="i in range(0,len(tags))">
+		        <a class="tag" href="${tg.url('/tag/' + str(tags[i].name))}" py:content="tags[i].name">Tag</a>
+		        <span style="overflow: hidden; font-size: 16pt;">
+		            <a style="position: relative; top: 7px; right: 7px;" href="#">&#x21e9;</a>
+		            <a style="position: relative; bottom: 7px; right: 25px;" href="#">&#x21e7;</a>
+		        </span>
+		        <span py:if="not tg.identity.anonymous and tg.identity.user.admin">&nbsp;
+		            <a href="${tg.url('/untagcourse/' + str(classid) + '/' + str(tags[i].name))}">(X)</a>
+		        </span>
+		    </span>
+		    <form style="display:inline;" method="get" action="${tg.url('/tagcourse/' + str(classid) + '/')}" name="addtag">
+			    <select name="tag" onChange="nav()">
+				    <option value=''>Add Tag...</option>
+				    <option py:for="i in alltags" value="${i}" py:content="i">TAG</option>
+				    <option value="newtag">New Tag...</option>
+			    </select>
+		    </form>
+		</span>
 	</p>
-	<p>Average review: ${XML(avg_score)}</p>
 	<p><b>People who took this course also took:</b><br />
 	<ul>
 		<li py:for="course in relatedCourses">
@@ -44,7 +58,7 @@ function nav()
 		</li>
 	</ul></p>
 
-	<p><b>Reviews:</b></p>
+	<!--<p><b>Reviews:</b></p>
 	<div py:for="i in range(0,len(reviews))" id="review">
 		<p>Rating: <span py:for="j in range(0,reviews[i].score)"><img src="/static/images/star.jpg" /></span><span py:for="j in range(0,5-reviews[i].score)"><img src="/static/images/nostar.jpg" /></span><br />
 		Review by: <a href="${tg.url('/user/' + str(reviews[i].reviewer.id))}" py:content="reviews[i].reviewer.display_name">User</a> on ${reviews[i].created.ctime()}</p>
@@ -54,7 +68,7 @@ function nav()
 		Did you find this review useful? <a href="${tg.url('/likedreview/' + str(reviews[i].id) + '/' + str(classid))}">Yes</a> <a href="${tg.url('/dislikedreview/' + str(reviews[i].id) + '/' + str(classid))}">No</a>&nbsp;|&nbsp;Is this review inappropriate? <a href="${tg.url('/flagreview/' + str(reviews[i].id) + '/' + str(classid))}">Report</a>
 		<span py:if="not tg.identity.anonymous and tg.identity.user.admin"><br /><a href="${tg.url('/deletereview/' + str(classid) + '/' + str(reviews[i].id))}">Remove this review</a></span></span></p>
 	</div>
-	<a href="${tg.url('/addreview/'+classid)}">Add review</a>
+	<a href="${tg.url('/addreview/'+classid)}">Add review</a>-->
 
 </div>
 

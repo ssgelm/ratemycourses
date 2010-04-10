@@ -66,6 +66,7 @@ class Root(controllers.RootController):
 	@expose("ratemycourses.templates.index")
 	def index(self):
 		topcourses = list(Course.select(orderBy='viewcount desc'))[0:5]
+		#TODO: select only user-generated tags
 		tags = Tag.select(orderBy='name')
 		catTag = [(tag.name, len(tag.courses)) for tag in tags]
 		tagcloud = self.makeCloud(5, catTag)
@@ -130,7 +131,10 @@ class Root(controllers.RootController):
 		description = thisClass[0].description
 		instructor_comments = thisClass[0].instructor_comments
 		reviews = thisClass[0].reviews
+		# TODO: select only user-defined tags
 		tags = thisClass[0].tags
+		# TODO: select only university (system) tags
+		sysTags = ['These', 'Are', 'Not', 'Real', 'Tags', 'Yet']
 		reviewtotal = 0
 		for i in range(0,len(reviews)):
 			reviewtotal += reviews[i].score
@@ -154,7 +158,7 @@ class Root(controllers.RootController):
 			relatedCourses.remove(thisClass[0])
 		except ValueError:
 			True
-		return dict(classid=classid, dept=dept, num=num, name=name, description=description, instructor_comments=instructor_comments, reviews=reviews, tags=tags, avg_score=avg_score, alltags=alltags, relatedCourses=relatedCourses[0:5])
+		return dict(classid=classid, dept=dept, num=num, name=name, description=description, instructor_comments=instructor_comments, reviews=reviews, tags=tags, sysTags=sysTags, avg_score=avg_score, alltags=alltags, relatedCourses=relatedCourses[0:5])
 
 	@expose("ratemycourses.templates.user")
 	def user(self, userid):
