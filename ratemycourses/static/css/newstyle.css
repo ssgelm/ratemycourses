@@ -274,9 +274,9 @@ a.tag:hover {
 
 div.orientation {
     margin: 10px;
-    border-radius: 10%;
+    border-radius: 10% 10% 10% 0;
     -moz-border-radius: 10% 10% 10% 0;
-    -webkit-border-radius: 10%;
+    -webkit-border-radius: 10% 10% 10% 0;
     background-color: SlateGray;
     padding: 0;
     color: white;
@@ -284,9 +284,9 @@ div.orientation {
 
 div.orientation div.question {
     margin: 0;
-    border-radius: 10%;
+    border-radius: 10% 10% 0 0;
     -moz-border-radius: 10% 10% 0 0;
-    -webkit-border-radius: 10%;
+    -webkit-border-radius: 10% 10% 0 0;
     background-color: black;
     padding: 10px;
     font-size: large;

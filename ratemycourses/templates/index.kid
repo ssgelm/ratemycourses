@@ -16,9 +16,9 @@
 
 <div style="float: right; width: 65%; margin-bottom: 10px; padding: 5px; text-align: justify;">
     
-	<p>Welcome to RateMyCourse. The aim of this website is to build relationships between courses across the bulletin by tagging classes with keywords, while also providing the ability to add course ratings.</p>
-
-    <p>To get started, click the "Courses" tab on the top menu to browse by departments or the "Tags" tab to see requirements and keywords associated with classes.</p>
+	<p>Welcome to RateMyCourses. This website builds relationships between courses across academic departments by linking classes with tags through keywords. Students, faculty and staff can also rate courses.</p>
+	
+	<p>To begin browsing the departments, click the “Courses” tab on the top menu or the "Tags" tab to see requirements and keywords.</p>
 
 </div>
 
