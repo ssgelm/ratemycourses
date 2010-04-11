@@ -5,11 +5,12 @@ from turbogears import identity, redirect, visit
 from cherrypy import request, response, session
 from cherrypy.lib import httptools
 import time
+from turbogears.widgets import AutoCompleteField
 import tw.forms as twf
 #import tw.rating as twr
 from formencode.schema import Schema
 import types, math
-from sqlobject import LIKE
+from sqlobject import LIKE, func
 import md5
 import cherrypy
 import operator
@@ -271,10 +272,30 @@ class Root(controllers.RootController):
 		thisReview.num_rated += 1
 		myRedirect = "/course/"+str(classid)
 		raise redirect(myRedirect)
-
+	
+	acfield = AutoCompleteField(	search_controller = "/searchtag",
+											search_param = "input",
+											result_name = "matches",
+											name= "tag")
+	
+	@expose("ratemycourses.templates.addtag")
+	def addtag(self, classid):
+		course = Course.select(Course.q.id==classid)[0]
+		return dict(course=course, acfield=self.acfield)
+	
+	@expose(format = "json")
+	def searchtag(self, input):
+		input = input.lower()
+		matches = list(Tag.select(LIKE(func.lower(Tag.q.name),input+"%"), orderBy=Tag.q.name))
+		matches = [tag.name for tag in matches]
+		return dict(matches=matches)
+	
 	@identity.require(identity.not_anonymous())
 	@expose()
-	def tagcourse(self, classid, tag='null'):
+	def tagcourse(self, **kw):
+		print kw
+		tag = kw['tag']['text']
+		classid = kw['courseid']
 		thisCourse = Course.select(Course.q.id==classid)
 		if tag == 'null' or tag == 'undefined':
 			myRedirect = "/course/"+str(classid)
@@ -289,8 +310,9 @@ class Root(controllers.RootController):
 		thisCourse[0].addTag(Tag.byName(tag))
 		f = Flash2()
 		f.ok("Tag "+tag+" Added", hideable=True)
-		myRedirect = "/course/"+str(classid)
-		raise redirect(myRedirect)
+		#myRedirect = "/course/"+str(classid)
+		#raise redirect(myRedirect)
+		return '<html><body><script type="text/javascript">self.parent.location.reload(true);</script></html>'
 
 	@identity.require(identity.not_anonymous())
 	@expose()

@@ -17,6 +17,9 @@ function nav()
 				}}
         }
 </script>
+	<link rel="stylesheet" href="/static/css/mediaboxAdvWhite.css" type="text/css" media="screen" />
+	<script src="/static/javascript/mootools-1.2.4-core-yc.js" type="text/javascript"></script>
+	<script src="/static/javascript/mediaboxAdv-1.2.0.js" type="text/javascript"></script> 
 </head>
 <body>
 
@@ -42,13 +45,7 @@ function nav()
 		            <a href="${tg.url('/untagcourse/' + str(classid) + '/' + str(tags[i].name))}">(X)</a>
 		        </span>
 		    </span>
-		    <form style="display:inline;" method="get" action="${tg.url('/tagcourse/' + str(classid) + '/')}" name="addtag">
-			    <select name="tag" onChange="nav()">
-				    <option value=''>Add Tag...</option>
-				    <option py:for="i in alltags" value="${i}" py:content="i">TAG</option>
-				    <option value="newtag">New Tag...</option>
-			    </select>
-		    </form>
+		    <br /><a href="${tg.url('/addtag/' + str(classid))}" rel="lightbox" title="Add tag">Add Tag...</a>
 		</span>
 	</p>
 	<p><b>People who took this course also took:</b><br />
