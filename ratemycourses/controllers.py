@@ -80,6 +80,8 @@ class Root(controllers.RootController):
 			courses = Course.select(Course.q.dept==subject)
 		else:
 			courses = Course.select(orderBy=['dept'])
+		courses = sorted(list(courses), key=lambda c:int(c.num[:-1]))
+		courses = sorted(courses, key=operator.attrgetter('dept'))
 		depts = sorted(list(set([eachclass.dept for eachclass in Course.select()])))
 		return dict(courses=courses, depts=depts, currentdept=subject)
 	
