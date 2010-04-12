@@ -18,7 +18,7 @@
     
 	<p>Welcome to RateMyCourses. This website builds relationships between courses across academic departments by linking classes with tags through keywords. Students, faculty and staff can also rate courses.</p>
 	
-	<p>To begin browsing the departments, click the “Courses” tab on the top menu or the "Tags" tab to see requirements and keywords.</p>
+	<p>To begin browsing the departments, click the <a href="${tg.url('/courses')}">Courses</a> tab on the top menu or the <a href="${tg.url('/tags')}">Tags</a> tab to see requirements and keywords.</p>
 
 </div>
 

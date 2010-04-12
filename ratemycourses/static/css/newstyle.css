@@ -23,6 +23,15 @@ body {
 	position: relative;
 }
 
+#header a {
+    color: white;
+}
+
+#header a:hover {
+    color: white;
+    text-decoration: none;
+}
+
 #pageLogin {
 	text-align: right;
 	color: #eee;

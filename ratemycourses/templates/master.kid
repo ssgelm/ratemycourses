@@ -22,7 +22,7 @@ from cherrypy import session as cp_session
 		            Logged in as: ${tg.identity.user.display_name+' ('+tg.identity.user.user_name+')' or tg.identity.user.user_name}
 		        </span>
 		    </div>
-			<h1>RateMyCourses</h1>
+			<h1><a href="${tg.url('/')}">RateMyCourses</a></h1>
 		</div>
 	</div>
 		
