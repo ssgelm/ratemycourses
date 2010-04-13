@@ -23,7 +23,7 @@
 </div>
 
 <div style="clear: both; margin-top: 10px; padding: 5px;">
-	<p style="line-height: 250%;" align="justify"><b>Popular Tags:</b><br /><span py:for="tag in tagcloud"><a class="tag" href="${tg.url('/tag/'+tag[0])}" style="font-size:${fontSizes[tag[1]]}" py:content="tag[0]">Tag</a> </span></p>
+	<p style="line-height: 250%;" align="justify"><b>Popular Tags:</b><br /><span class="tag" py:for="tag in tagcloud"><a class="tag" href="${tg.url('/tag/'+tag[0])}" style="font-size:${fontSizes[tag[1]]}" py:content="tag[0]">Tag</a> </span></p>
 
 	<!--<p><b>Most Viewed Courses:</b>
 	<ul>

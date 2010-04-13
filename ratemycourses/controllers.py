@@ -135,7 +135,7 @@ class Root(controllers.RootController):
 		instructor_comments = thisClass[0].instructor_comments
 		reviews = thisClass[0].reviews
 		# TODO: select only user-defined tags
-		tags = thisClass[0].tags
+		tags = sorted(thisClass[0].tags, key=operator.attrgetter('name'))
 		# TODO: select only university (system) tags
 		sysTags = ['These', 'Are', 'Not', 'Real', 'Tags', 'Yet']
 		reviewtotal = 0
@@ -147,7 +147,7 @@ class Root(controllers.RootController):
 		except ZeroDivisionError:
 			avg_score = "Class not rated yet"
 		alltags=list(Tag.select(orderBy='name'))
-		for tag in tags:
+		for tag in set(tags):
 			alltags.remove(tag)
 		for i in range(0,len(alltags)):
 			alltags[i] = alltags[i].name
@@ -281,7 +281,8 @@ class Root(controllers.RootController):
 	@expose("ratemycourses.templates.addtag")
 	def addtag(self, classid):
 		course = Course.select(Course.q.id==classid)[0]
-		return dict(course=course, acfield=self.acfield)
+		tags = Tag.select(orderBy='name')
+		return dict(course=course, acfield=self.acfield, tags=tags)
 	
 	@expose(format = "json")
 	def searchtag(self, input):
@@ -297,9 +298,10 @@ class Root(controllers.RootController):
 		tag = kw['tag']['text']
 		classid = kw['courseid']
 		thisCourse = Course.select(Course.q.id==classid)
+		f = Flash2()
 		if tag == 'null' or tag == 'undefined':
-			myRedirect = "/course/"+str(classid)
-			raise redirect(myRedirect)
+			f.error('You must enter a tag')
+			return '<html><body><script type="text/javascript">self.parent.location.reload(true);</script></html>'
 		try:
 			Tag.byName(tag)
 		except SQLObjectNotFound:
@@ -307,11 +309,11 @@ class Root(controllers.RootController):
 			if len(tag) > 1:
 				tag = tag[0].upper()+tag[1:]
 			temp = Tag(name=tag)
+		if Tag.byName(tag) in thisCourse[0].tags:
+			f.error('Tag already exists')
+			return '<html><body><script type="text/javascript">self.parent.location.reload(true);</script></html>'
 		thisCourse[0].addTag(Tag.byName(tag))
-		f = Flash2()
 		f.ok("Tag "+tag+" Added", hideable=True)
-		#myRedirect = "/course/"+str(classid)
-		#raise redirect(myRedirect)
 		return '<html><body><script type="text/javascript">self.parent.location.reload(true);</script></html>'
 
 	@identity.require(identity.not_anonymous())
@@ -341,7 +343,6 @@ class Root(controllers.RootController):
 			f.ok("Review deleted", hideable=True)
 		myRedirect = "/course/"+str(classid)
 		raise redirect(myRedirect)
-
 
 	@expose()
 	def logout(self):
@@ -393,15 +394,15 @@ class Flash2:
 			except IndexError:
 				raise StopIteration
 	
-	def info(self, msg, html=False, hideable=False, growl=False):
+	def info(self, msg, html=False, hideable=True, growl=False):
 		self.add_message(msg, 'info', html, growl, hideable)
 	
-	def warning(self, msg, html=False, hideable=False, growl=False):
+	def warning(self, msg, html=False, hideable=True, growl=False):
 		self.add_message(msg, 'warning', html, growl, hideable)
 	
-	def error(self, msg, html=False, hideable=False, growl=False):
+	def error(self, msg, html=False, hideable=True, growl=False):
 		self.add_message(msg, 'error', html, growl, hideable)
 	
-	def ok(self, msg, html=False, hideable=False, growl=False):
+	def ok(self, msg, html=False, hideable=True, growl=False):
 		self.add_message(msg, 'ok', html, growl, hideable)
 	

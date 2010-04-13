@@ -9,6 +9,10 @@ body {
 	text-align: center;
 }
 
+body.whitebg {
+	background-color: white;
+}
+
 #wrapper-header {	background: #222; }
 
 #header {
@@ -277,8 +281,45 @@ a.tag {
     color: white;
 }
 
+span.tag {
+	padding: 5px 0px 5px 0px;
+	margin: 1px;
+}
+
+a.addtag {
+    border-radius: 7px;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    background-color: #0070FF;
+    padding: 3px 6px 3px 6px;
+    margin: 2px;
+    color: white;
+    font-size: 90%;
+    display: inline-block;
+}
+
 a.tag:hover {
     background-color: SkyBlue;
+}
+
+a.addtag:hover {
+    background-color: SkyBlue;
+}
+
+span.vote {
+	display: inline-block;
+	vertical-align: -32%;
+}
+
+a.vote {
+	display: block;
+	float: none;
+	clear: both;
+	margin: 2px;
+}
+
+img.vote {
+	border: 0px;
 }
 
 div.orientation {

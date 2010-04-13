@@ -35,14 +35,14 @@ function nav()
 	<p><span py:replace="description">Course description</span></p>
 	<p><b>Tagged as:</b>
 	    <span>
-		    <span style="margin-right: 0px; padding: 5px 5px 5px 0;" py:for="i in range(0,len(tags))">
+		    <span class="tag" style="line-height: 100%;" py:for="i in range(0,len(tags))">
 		        <a class="tag" href="${tg.url('/tag/' + str(tags[i].name))}" py:content="tags[i].name">Tag</a>
-		        <span style="overflow: hidden; font-size: 16pt;">
-		            <a style="position: relative; top: 7px; right: 7px;" href="#">&#x21e9;</a>
-		            <a style="position: relative; bottom: 7px; right: 25px;" href="#">&#x21e7;</a>
+		        <span class="vote">
+					<a class="vote" href="#"><img class="vote" src="${tg.url('/static/images/up-arrow.png')}" /></a>
+		            <a class="vote" href="#"><img class="vote" src="${tg.url('/static/images/down-arrow.png')}" /></a>
 		        </span>
-		        <span py:if="not tg.identity.anonymous and tg.identity.user.admin">&nbsp;
-		            <a href="${tg.url('/untagcourse/' + str(classid) + '/' + str(tags[i].name))}">(X)</a>
+		        <span py:if="not tg.identity.anonymous and tg.identity.user.admin">
+		            <a href="${tg.url('/untagcourse/' + str(classid) + '/' + str(tags[i].name))}"><img class="vote" style="width 15px; height: 15px; vertical-align:-20%;" src="${tg.url('/static/images/error.png')}" /></a>
 		        </span>
 		    </span>
 		    <br /><a href="${tg.url('/addtag/' + str(classid))}" rel="lightbox" title="Add tag">Add Tag...</a>
