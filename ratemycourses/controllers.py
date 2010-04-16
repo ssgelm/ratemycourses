@@ -177,7 +177,10 @@ class Root(controllers.RootController):
 	def tag(self, tagName):
 		thisTag = Tag.byName(tagName)
 		courses = thisTag.courses
-		return dict(name=tagName, courses=courses)
+		description = thisTag.description
+		if not description:
+		    description = "This tag does not yet have a description.";
+		return dict(name=tagName, courses=courses, description=description)
 
 	addreview_form = twf.TableForm('addreview_form', action='/savereview', show_errors=True, validator=TGSchema, children=[
 		twf.HiddenField('classid', validator=twf.validators.Int(not_empty=True)),

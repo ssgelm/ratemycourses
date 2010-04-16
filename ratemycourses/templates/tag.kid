@@ -9,6 +9,7 @@
 <div>
 
 	<h1><span py:replace="name">Tag</span></h1>
+	<p><span py:replace="description">Description</span></p>
 	<hr />
 	<p><b>Courses tagged with <span py:replace="name">Tag</span>:</b></p>
 	<p><b><a href="${tg.paginate.get_href(1)}" py:content="'&laquo;'" />&nbsp;<a py:strip="tg.paginate.current_page == 1"
