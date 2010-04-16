@@ -135,9 +135,9 @@ class Root(controllers.RootController):
 		instructor_comments = thisClass[0].instructor_comments
 		reviews = thisClass[0].reviews
 		# TODO: select only user-defined tags
-		tags = sorted(thisClass[0].tags, key=operator.attrgetter('name'))
+		tags = sorted([tag for tag in thisClass[0].tags if tag.category == 'user'], key=operator.attrgetter('name'))
 		# TODO: select only university (system) tags
-		sysTags = ['These', 'Are', 'Not', 'Real', 'Tags', 'Yet']
+		sysTags = sorted([tag for tag in thisClass[0].tags if tag.category != 'user'], key=operator.attrgetter('name'))
 		reviewtotal = 0
 		for i in range(0,len(reviews)):
 			reviewtotal += reviews[i].score

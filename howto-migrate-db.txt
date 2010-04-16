@@ -1,0 +1,15 @@
+Migrating sqlite to MySQL:
+
+(1) Run the following command:
+    # sqlite3 <sqlite database> .dump .quit > dump.sql
+    
+(2) Modify dump.sql as follows:
+    a. remove all "BEGIN TRANSACTION" and "COMMIT" statements.
+    b. replace all double quotes (") with grave accents (`).
+    c. remove all "CREATE TABLE" statements.
+
+(3) Create a MySQL database and point to it in the config file (dev.cfg or prod.cfg).
+
+(4) Run the following commands:
+    # tg-admin sql create
+    # mysql <database> < dump.sql

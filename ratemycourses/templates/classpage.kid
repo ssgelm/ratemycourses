@@ -30,7 +30,7 @@ function nav()
 	</div>
 	<div id="avgRating" style="float: right; width: 30%; padding-top: 10px;">${XML(avg_score)}</div>
 	<hr style="clear:both;" />
-	<p style="margin: 2px auto;"><span style="margin-right: 12px;" py:for="i in range(0,len(sysTags))"><a class="tag" href="${tg.url('/tag/' + str(sysTags[i]))}" py:content="sysTags[i]">Tag</a></span></p>
+	<p style="margin: 2px auto;"><span style="margin-right: 12px;" py:for="i in range(0,len(sysTags))"><a class="tag" href="${tg.url('/tag/' + str(sysTags[i].name))}" py:content="sysTags[i].name">Tag</a></span></p>
 	<hr />
 	<p><span py:replace="description">Course description</span></p>
 	<p><b>Tagged as:</b>

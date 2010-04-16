@@ -28,6 +28,8 @@ class Tag(SQLObject):
 	def _get_count(self):
 		return len(self.courses)
 	count = property(_get_count)
+	description = UnicodeCol()
+	category = UnicodeCol() # enumerate('userDefined', 'department', 'majorReq', ...) would be better
 
 # Review: id, score, num_liked, num_rated, professor, reviewer
 class Review(SQLObject):
