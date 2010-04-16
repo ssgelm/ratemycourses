@@ -45,7 +45,9 @@ function nav()
 		            <a href="${tg.url('/untagcourse/' + str(classid) + '/' + str(tags[i].name))}"><img class="vote" style="width 15px; height: 15px; vertical-align:-20%;" src="${tg.url('/static/images/error.png')}" /></a>
 		        </span>
 		    </span>
-		    <br /><a href="${tg.url('/addtag/' + str(classid))}" rel="lightbox" title="Add tag">Add Tag...</a>
+		    <br />
+				<span py:if="not tg.identity.anonymous" py:strip="True"><a href="${tg.url('/addtag/' + str(classid))}" rel="lightbox">Add Tag...</a></span>
+				<span py:if="tg.identity.anonymous" py:strip="True"><a href="${tg.url('/login')}">Login to add a tag...</a></span>
 		</span>
 	</p>
 	<p><b>People who took this course also took:</b><br />
@@ -54,6 +56,10 @@ function nav()
 			<a href="${tg.url('/course/' + str(course.id))}" py:content="course.dept+' '+course.num+': '+course.name">Page Name Here.</a>
 		</li>
 	</ul></p>
+	
+	<p>
+		${ratingWidget()}
+	</p>
 
 	<!--<p><b>Reviews:</b></p>
 	<div py:for="i in range(0,len(reviews))" id="review">

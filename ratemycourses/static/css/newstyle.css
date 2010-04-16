@@ -276,9 +276,9 @@ a.tag {
     border-radius: 7px;
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
-    background-color: #0070FF;
+    background-color: lightSteelBlue;
     padding: 5px;
-    color: white;
+    color: black;
 }
 
 span.tag {
@@ -290,10 +290,10 @@ a.addtag {
     border-radius: 7px;
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
-    background-color: #0070FF;
+    background-color: lightSteelBlue;
     padding: 3px 6px 3px 6px;
     margin: 2px;
-    color: white;
+    color: black;
     font-size: 90%;
     display: inline-block;
 }
@@ -353,3 +353,4 @@ div.orientation a.answer {
     background-color: white;
     padding: 5px;
     text-align: center;
+}

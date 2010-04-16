@@ -1,13 +1,15 @@
 import turbogears as tg
 from turbogears import controllers, expose, flash, widgets, validators, validate, error_handler, paginate
+from turbogears.toolbox.catwalk import CatWalk
 from ratemycourses.model import *
+import model
 from turbogears import identity, redirect, visit
 from cherrypy import request, response, session
 from cherrypy.lib import httptools
 import time
 from turbogears.widgets import AutoCompleteField
 import tw.forms as twf
-#import tw.rating as twr
+import tw.rating as twr
 from formencode.schema import Schema
 import types, math
 from sqlobject import LIKE, func
@@ -22,7 +24,10 @@ class TGSchema(Schema):
 	allow_extra_fields = True
 
 class Root(controllers.RootController):
-
+	
+	catwalk = CatWalk(model)
+	catwalk = identity.SecureObject(catwalk,identity.in_group('admin'))
+	
 	@expose(template="ratemycourses.templates.login")
 	def login(self, forward_url=None, *args, **kw):
 		user = request.headers.get("X-Forwarded-User", None)
@@ -116,14 +121,14 @@ class Root(controllers.RootController):
 		returnString = ''
 		originalValue = math.ceil(stars)
 		while stars >= 1.0:
-			returnString = returnString+'<img src="/static/images/star.jpg" />'
+			returnString = returnString+'&nbsp;<img src="/static/images/star.png" />'
 			stars -= 1.0
 		if stars >= 0.4:
-			returnString = returnString+'<img src="/static/images/halfstar.jpg" />'
+			returnString = returnString+'&nbsp;<img src="/static/images/halfstar.png" />'
 		for i in range(0,5.0-originalValue):
-			returnString = returnString+'<img src="/static/images/nostar.jpg" />'
+			returnString = returnString+'&nbsp;<img src="/static/images/nostar.png" />'
 		return returnString
-
+	
 	@expose("ratemycourses.templates.classpage")
 	def course(self, classid):
 		thisClass = Course.select(Course.q.id==classid)
@@ -161,7 +166,8 @@ class Root(controllers.RootController):
 			relatedCourses.remove(thisClass[0])
 		except ValueError:
 			True
-		return dict(classid=classid, dept=dept, num=num, name=name, description=description, instructor_comments=instructor_comments, reviews=reviews, tags=tags, sysTags=sysTags, avg_score=avg_score, alltags=alltags, relatedCourses=relatedCourses[0:5])
+		ratingWidget = twr.Rating(action='/addrating')
+		return dict(classid=classid, dept=dept, num=num, name=name, description=description, instructor_comments=instructor_comments, reviews=reviews, tags=tags, sysTags=sysTags, avg_score=avg_score, alltags=alltags, relatedCourses=relatedCourses[0:5], ratingWidget=ratingWidget)
 
 	@expose("ratemycourses.templates.user")
 	def user(self, userid):

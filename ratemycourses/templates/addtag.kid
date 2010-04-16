@@ -14,7 +14,7 @@
 	<form action="/tagcourse" type="GET">
 		${acfield.display()}
 		<input type="hidden" name="courseid" value="${course.id}" />
-		<input type="Submit" name="Add Tag" />
+		<input type="Submit" value="Add Tag" />
 	</form>
 	<p>Available tags:</p>
 	<span class="tag" py:for="tag in tags">
