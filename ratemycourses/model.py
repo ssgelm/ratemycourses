@@ -19,7 +19,7 @@ __connection__ = hub = PackageHub('ratemycourses')
 # class YourDataClass(SQLObject):
 #	 pass
 
-# Tag: id, name, created, count, +description, +category
+# Tag: id, name
 class Tag(SQLObject):
 	name = UnicodeCol(alternateID = True, length = 255)
 	created = DateTimeCol(default=datetime.now)
@@ -28,43 +28,31 @@ class Tag(SQLObject):
 	def _get_count(self):
 		return len(self.courses)
 	count = property(_get_count)
-	description = UnicodeCol()
-	category = UnicodeCol() # enumerate('userDefined', 'department', 'majorReq', ...) would be better
 
-# Would be more aptly named "Rating", since we no longer do reviews...
-# Review: id, score, -num_liked, -num_rated, -professor, created, reviewer, course, -flagged
+# Review: id, score, num_liked, num_rated, professor, reviewer
 class Review(SQLObject):
 	score = IntCol()
-	created = DateTimeCol(default=datetime.now)
-	reviewer = ForeignKey('User')
-	course = ForeignKey('Course')
-	
-	# cruft
 	num_liked = IntCol()
 	num_rated = IntCol()
 	professor = UnicodeCol(length = 255)
 	contents = UnicodeCol()
+	created = DateTimeCol(default=datetime.now)
+	reviewer = ForeignKey('User')
+	course = ForeignKey('Course')
 	flagged = IntCol(default=0)
 
-# Course: id, name, description, -instructor_comments, created, reviews, tags, -in_locker, viewcount
+# Course: id, name, description, instructor_comments, avg_score
 class Course(SQLObject):
-	dept = ForeignKey('Department')
+	dept = UnicodeCol(length = 255)
 	num = UnicodeCol(length = 255)
 	name = UnicodeCol(length = 255)
 	description = UnicodeCol()
+	instructor_comments = UnicodeCol(default='')
 	created = DateTimeCol(default=datetime.now)
 	reviews = MultipleJoin('Review')
 	tags = RelatedJoin('Tag')
-	viewcount = IntCol(default=0)
-	
-	# cruft
-	instructor_comments = UnicodeCol(default='')
 	in_locker = RelatedJoin('User', joinColumn='course_id', otherColumn='tg_user_id', intermediateTable='course_tg_user')
-	
-# +Department: id, name, abbreviation
-class Department(SQLObject):
-    name = UnicodeCol(length = 255)
-    abbreviation = UnicodeCol(length = 4)
+	viewcount = IntCol(default=0)
 
 # the identity model
 
