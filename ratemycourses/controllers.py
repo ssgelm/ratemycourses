@@ -187,6 +187,21 @@ class Root(controllers.RootController):
 		if not description:
 		    description = "This tag does not yet have a description.";
 		return dict(name=tagName, courses=courses, description=description)
+		
+	@expose("ratemycourses.templates.edittag")
+	def edittag(self, tagName):
+		thisTag = Tag.byName(tagName)
+		description = thisTag.description
+		if not description:
+		    description = "This tag does not yet have a description.";
+		return dict(tagName=tagName, description=description)
+		
+	@expose()
+	def savetag(self, tagName, data, submit):
+		thisTag = Tag.byName(tagName)
+		thisTag.description = data
+		#TODO: flash success
+		raise redirect("/tag", tagName=tagName)
 
 	addreview_form = twf.TableForm('addreview_form', action='/savereview', show_errors=True, validator=TGSchema, children=[
 		twf.HiddenField('classid', validator=twf.validators.Int(not_empty=True)),
