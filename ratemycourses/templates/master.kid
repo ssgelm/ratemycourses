@@ -49,6 +49,9 @@ from cherrypy import session as cp_session
 				<input type="image" src="${tg.url('/static/images/searchbtn.png')}" width="27" height="24" id="go" alt="Search" title="Search" name="go" />
 			</form>
 		</div>
+		<div style="float: right;">
+			<a href="${tg.url('/advsearch')}">Advanced Search</a>
+		</div>
 		</div>
 	</div>
 

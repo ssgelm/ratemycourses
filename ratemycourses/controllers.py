@@ -109,6 +109,16 @@ class Root(controllers.RootController):
 		tags = Tag.select(LIKE(Tag.q.name,'%'+search+'%'))
 		users = User.select(LIKE(User.q.display_name,'%'+search+'%'))
 		return dict(courses=courses, tags=tags, users=users, search=search)
+	
+	@expose("ratemycourses.templates.advsearch")
+	def advsearch(self, searchtags=[], submit=""):
+		if type(searchtags).__name__ != 'list':
+			searchtags = [searchtags]
+		tags = Tag.select(orderBy='name')
+		results = []
+		if searchtags != []:
+			results = filter(lambda x: set(searchtags) <= set([t.name for t in x.tags]), Course.select())
+		return dict(tags=tags, results=results)
 
 	@identity.require(identity.not_anonymous())
 	@expose("ratemycourses.templates.locker")
@@ -139,9 +149,7 @@ class Root(controllers.RootController):
 		description = thisClass[0].description
 		instructor_comments = thisClass[0].instructor_comments
 		reviews = thisClass[0].reviews
-		# TODO: select only user-defined tags
 		tags = sorted([tag for tag in thisClass[0].tags if tag.category == 'user'], key=operator.attrgetter('name'))
-		# TODO: select only university (system) tags
 		sysTags = sorted([tag for tag in thisClass[0].tags if tag.category != 'user'], key=operator.attrgetter('name'))
 		reviewtotal = 0
 		for i in range(0,len(reviews)):
