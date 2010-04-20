@@ -14,6 +14,7 @@
     <div style="width: 50%; float: left;">
 		<h2>Tags</h2>
 		<form action="/advsearch" method="post">
+			<input type="submit" name="submit" value="Search" />
 			<ul>
 				<li py:for="tag in tags">
 					<label><input type="checkbox" name="searchtags" value="${tag.name}"/><span py:content="tag.name">Tag</span></label>
