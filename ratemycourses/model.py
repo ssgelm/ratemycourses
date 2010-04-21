@@ -28,8 +28,8 @@ class Tag(SQLObject):
 	def _get_count(self):
 		return len(self.courses)
 	count = property(_get_count)
-	description = UnicodeCol()
-	category = UnicodeCol() # enumerate('userDefined', 'department', 'majorReq', ...) would be better
+	description = UnicodeCol(default='')
+	category = UnicodeCol(default='user') # enumerate('userDefined', 'department', 'majorReq', ...) would be better
 
 # Review: id, score, num_liked, num_rated, professor, reviewer
 class Review(SQLObject):
@@ -55,6 +55,11 @@ class Course(SQLObject):
 	tags = RelatedJoin('Tag')
 	in_locker = RelatedJoin('User', joinColumn='course_id', otherColumn='tg_user_id', intermediateTable='course_tg_user')
 	viewcount = IntCol(default=0)
+
+# Department: id, abbr, name
+class Department(SQLObject):
+	abbr = UnicodeCol(length = 4)
+	name = UnicodeCol(length = 255)
 
 # the identity model
 

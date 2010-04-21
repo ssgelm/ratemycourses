@@ -10,12 +10,14 @@ import time
 from turbogears.widgets import AutoCompleteField
 import tw.forms as twf
 import tw.rating as twr
+import tw.extjs as twe
 from formencode.schema import Schema
 import types, math
 from sqlobject import LIKE, func
 import md5
 import cherrypy
 import operator
+import simplejson
 # from ratemycourses import json
 import logging
 log = logging.getLogger("ratemycourses.controllers")
@@ -79,17 +81,38 @@ class Root(controllers.RootController):
 		fontSizes = { '1':'12px', '2':'14px', '3':'16px', '4':'20px', '5':'24px' }
 		return dict(topcourses=topcourses, tagcloud=tagcloud, fontSizes=fontSizes)
 	
-	@expose("ratemycourses.templates.courses")
-	@paginate('courses', limit=25, max_pages=10)
-	def courses(self, subject=None):
-		if subject:
-			courses = Course.select(Course.q.dept==subject)
+	@expose()
+	def get_course_list(self, node):
+		treelist = []
+		if node == 'root':
+			depts = sorted(list(set([eachclass.dept for eachclass in Course.select()])))
+			deptlist = []
+			for dept in depts:
+				db_dept = Department.select(Department.q.abbr == dept)[0]
+				deptlist.append({'text':db_dept.name, 'id':dept})
+			deptlist = sorted(deptlist, key=lambda c: c['text'])
+			for dept in deptlist:
+				treelist.append({	'text':dept['text'],
+										'id':dept['id'],
+										'cls':'folder',
+										'singleClickExpand':'true'})
 		else:
-			courses = Course.select(orderBy=['dept'])
-		courses = sorted(list(courses), key=lambda c:int(c.num[:-1]))
-		courses = sorted(courses, key=operator.attrgetter('dept'))
-		depts = sorted(list(set([eachclass.dept for eachclass in Course.select()])))
-		return dict(courses=courses, depts=depts, currentdept=subject)
+			courses = Course.select(Course.q.dept==node)
+			courses = sorted(list(courses), key=lambda c:c.num[-1:])
+			courses = sorted(courses, key=lambda c:int(c.num[:-1]))
+			for course in courses:
+				treelist.append({	'text':'%s %s: %s' % (course.dept, course.num, course.name),
+										'id':course.id,
+										'href':tg.url('course/%d' % course.id),
+										'leaf':'true',
+										'cls':'file'})
+		return simplejson.dumps(treelist)
+	
+	courseTree = twe.TreeView(divID='treeView1', fetch='/get_course_list', rootID='root', rootText='Courses', title='', collapsible=False, enableDD=False, frame=False)
+	
+	@expose("ratemycourses.templates.courses")
+	def courses(self):
+		return dict(courseTree=self.courseTree)
 	
 	@expose("ratemycourses.templates.tags")
 	def tags(self, order="name"):
