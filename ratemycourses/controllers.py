@@ -13,7 +13,7 @@ import tw.rating as twr
 import tw.extjs as twe
 from formencode.schema import Schema
 import types, math
-from sqlobject import LIKE, func
+from sqlobject import LIKE, func, AND
 import md5
 import cherrypy
 import operator
@@ -162,6 +162,31 @@ class Root(controllers.RootController):
 			returnString = returnString+'&nbsp;<img src="/static/images/nostar.png" />'
 		return returnString
 	
+	@identity.require(identity.not_anonymous())
+	@expose()
+	def addrating(self, course, **kw):
+		print kw
+		f = Flash2()
+		reviews = list(Course.select(Course.q.id==int(course))[0].reviews)
+		totalscore = 0
+		for review in reviews:
+			totalscore += review.score
+		try:
+			avgscore = float(totalscore) / len(reviews)
+		except ZeroDivisionError:
+			avgscore = 'Not rated'
+		response = {}
+		response['total'] = len(reviews)
+		response['average'] = avgscore
+		response['message'] = 'Thanks!'
+		checkreview = list(Review.select(AND(Review.q.reviewer == identity.current.user, Review.q.course == Course.select(Course.q.id==int(course))[0])))
+		if len(checkreview) > 0:
+			f.error('Course already rated')
+			return simplejson.dumps(response)
+		review = Review(score=int(kw['rating']), course = Course.select(Course.q.id==course)[0], reviewer = identity.current.user)
+		f.ok('Rating added')
+		return simplejson.dumps(response)
+	
 	@expose("ratemycourses.templates.classpage")
 	def course(self, classid):
 		thisClass = Course.select(Course.q.id==classid)
@@ -197,8 +222,13 @@ class Root(controllers.RootController):
 			relatedCourses.remove(thisClass[0])
 		except ValueError:
 			True
-		ratingWidget = twr.Rating(action='/addrating')
-		return dict(classid=classid, dept=dept, num=num, name=name, description=description, instructor_comments=instructor_comments, reviews=reviews, tags=tags, sysTags=sysTags, avg_score=avg_score, alltags=alltags, relatedCourses=relatedCourses[0:5], ratingWidget=ratingWidget)
+		ratingWidget = twr.Rating(action='/addrating?course=%s' % classid, label_text='Add a rating:', id='rating', on_click='window.location.reload();')
+		crosslinks = []
+		for cl in thisClass[0].crosslinks:
+			otherclass = [c for c in cl.courses if c.id != int(classid)][0]
+			crosslinks.append({'otherclass':otherclass, 'description':cl.description})
+		return dict(classid=classid, dept=dept, num=num, name=name, description=description, instructor_comments=instructor_comments, reviews=reviews, tags=tags,
+						sysTags=sysTags, avg_score=avg_score, alltags=alltags, relatedCourses=relatedCourses[0:5], ratingWidget=ratingWidget, crosslinks=crosslinks)
 
 	@expose("ratemycourses.templates.user")
 	def user(self, userid):
@@ -339,6 +369,27 @@ class Root(controllers.RootController):
 		tags = Tag.select(orderBy='name')
 		return dict(course=course, acfield=self.acfield, tags=tags)
 	
+	@expose("ratemycourses.templates.addcrosslink")
+	def addcrosslink(self, classid):
+		course = Course.select(Course.q.id==classid)[0]
+		courses = Course.select()
+		courses = sorted(list(courses), key=lambda c:c.num[-1:])
+		courses = sorted(courses, key=lambda c:int(c.num[:-1]))
+		courses = sorted(courses, key=lambda c:c.dept)		
+		return dict(course=course, all_courses=courses)
+	
+	@identity.require(identity.not_anonymous())
+	@expose()
+	def crosslinkcourse(self, course1, course2, description):
+		crosslink = CrossLink(description=description, creator=identity.current.user)
+		course1obj = Course.select(Course.q.id==course1)[0]
+		crosslink.addCourse(course1obj)
+		course2obj = Course.select(Course.q.id==course2)[0]
+		crosslink.addCourse(course2obj)
+		f = Flash2()
+		f.ok('CrossLink between %s %s and %s %s added' % (course1obj.dept, course1obj.num, course2obj.dept, course2obj.num), hideable=True)
+		return '<html><body><script type="text/javascript">self.parent.location.reload(true);</script></html>'
+	
 	@expose(format = "json")
 	def searchtag(self, input):
 		input = input.lower()
@@ -349,7 +400,6 @@ class Root(controllers.RootController):
 	@identity.require(identity.not_anonymous())
 	@expose()
 	def tagcourse(self, **kw):
-		print kw
 		tag = kw['tag']['text']
 		classid = kw['courseid']
 		thisCourse = Course.select(Course.q.id==classid)

@@ -3,32 +3,32 @@
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" py:replace="''"/>
 <title>RateMyCourses: <span py:replace="dept">DEPT</span> <span py:replace="num">NUM</span> - <span py:replace="name">Class Name</span></title>
-<script language="javascript">
-function nav()
-        {
-                var w = document.addtag.tag.selectedIndex;
-                var url_add = document.addtag.tag.options[w].value;
-				if(url_add == 'newtag'){
-					url_add=prompt("Tag Name:", "");
-				}
-				if(url_add !== 'null'){
-				if(url_add !== 'undefined'){
-                	window.location.href = '${tg.url('/tagcourse/'+classid+'/')}'+url_add;
-				}}
-        }
-</script>
 	<link rel="stylesheet" href="/static/css/mediaboxAdvWhite.css" type="text/css" media="screen" />
 	<script src="/static/javascript/mootools-1.2.4-core-yc.js" type="text/javascript"></script>
+	<script src="/static/javascript/mootools-1.2.4.4-more.js" type="text/javascript"></script>
 	<script src="/static/javascript/mediaboxAdv-1.2.0.js" type="text/javascript"></script> 
+	<script language="javascript">
+		window.addEvent('domready', function(){
+			$$$$('img.hint').each(function(element) {  
+				var content = element.get('title').split('::');  
+				element.store('tip:title', content[0]);  
+				element.store('tip:text', content[1]);  
+			});
+			var Hint = new Tips($$$$('.hint'));
+		});
+	</script>
 </head>
 <body>
 
 <div>
-    <div style="display: inline; float: left; width: 70%">
+    <div style="display: inline; float: left; width:60%">
 	<h1><span py:replace="name">Class Name</span></h1>
 	<h2><span py:replace="dept">DEPT</span> <span py:replace="num">NUM</span><!--&nbsp;-&nbsp;<span style="font: x-small 'Lucida Grande', 'Lucida Sans Unicode', geneva, verdana, sans-serif"><a href="${tg.url('/addtolocker/' + classid)}">Add to my locker</a></span>--></h2>
 	</div>
-	<div id="avgRating" style="float: right; width: 30%; padding-top: 10px;">${XML(avg_score)}</div>
+	<div id="avgRating" style="float: right; padding-top: 10px; width:280px;">${XML(avg_score)}</div>
+	<div id="addRating" style="float:right; padding-bottom: 5px; clear: right;">
+                ${ratingWidget()}
+    </div>
 	<hr style="clear:both;" />
 	<p style="margin: 2px auto;"><span style="margin-right: 12px;" py:for="i in range(0,len(sysTags))"><a class="tag" href="${tg.url('/tag/' + str(sysTags[i].name))}" py:content="sysTags[i].name">Tag</a></span></p>
 	<hr />
@@ -42,7 +42,7 @@ function nav()
 		            <a class="vote" href="#"><img class="vote" src="${tg.url('/static/images/down-arrow.png')}" /></a>
 		        </span>
 		        <span py:if="not tg.identity.anonymous and tg.identity.user.admin">
-		            <a href="${tg.url('/untagcourse/' + str(classid) + '/' + str(tags[i].name))}"><img class="vote" style="width 15px; height: 15px; vertical-align:-20%;" src="${tg.url('/static/images/error.png')}" /></a>
+		            <a href="${tg.url('/untagcourse/' + str(classid) + '/' + str(tags[i].name))}"><img class="vote" style="width: 15px; height: 15px; vertical-align:-20%;" src="${tg.url('/static/images/error.png')}" /></a>
 		        </span>
 		    </span>
 		    <br />
@@ -50,16 +50,23 @@ function nav()
 				<span py:if="tg.identity.anonymous" py:strip="True"><a href="${tg.url('/login')}">Login to add a tag...</a></span>
 		</span>
 	</p>
+	<p><b>CrossLinks:</b>&nbsp;&nbsp;<img src="${tg.url('/static/images/help.png')}" style="vertical-align: -10%" class="hint" title="CrossLink::CrossLinking enables you to see and add courses that are in some way related to each other." /><br />
+		<ul style="margin-bottom: 0px">
+			<li py:for="cl in crosslinks"><a href="${tg.url('/course/%d' % cl['otherclass'].id)}">${cl['otherclass'].dept} ${cl['otherclass'].num}: ${cl['otherclass'].name}</a><br />
+				CrossLinked because: ${cl['description']}
+			</li>
+		</ul>
+		<p style="margin-top: 0px">
+			<span py:if="not tg.identity.anonymous" py:strip="True"><a href="${tg.url('/addcrosslink/' + str(classid))}" rel="lightbox[600 570]">Add CrossLink...</a></span>
+			<span py:if="tg.identity.anonymous" py:strip="True"><a href="${tg.url('/login')}">Login to add a CrossLink...</a></span>
+		</p>
+	</p>
 	<p><b>People who took this course also took:</b><br />
 	<ul>
 		<li py:for="course in relatedCourses">
 			<a href="${tg.url('/course/' + str(course.id))}" py:content="course.dept+' '+course.num+': '+course.name">Page Name Here.</a>
 		</li>
 	</ul></p>
-	
-	<p>
-		${ratingWidget()}
-	</p>
 
 	<!--<p><b>Reviews:</b></p>
 	<div py:for="i in range(0,len(reviews))" id="review">

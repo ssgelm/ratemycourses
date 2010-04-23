@@ -34,10 +34,10 @@ class Tag(SQLObject):
 # Review: id, score, num_liked, num_rated, professor, reviewer
 class Review(SQLObject):
 	score = IntCol()
-	num_liked = IntCol()
-	num_rated = IntCol()
-	professor = UnicodeCol(length = 255)
-	contents = UnicodeCol()
+	num_liked = IntCol(default=0)
+	num_rated = IntCol(default=0)
+	professor = UnicodeCol(length = 255,default='')
+	contents = UnicodeCol(default='')
 	created = DateTimeCol(default=datetime.now)
 	reviewer = ForeignKey('User')
 	course = ForeignKey('Course')
@@ -55,11 +55,19 @@ class Course(SQLObject):
 	tags = RelatedJoin('Tag')
 	in_locker = RelatedJoin('User', joinColumn='course_id', otherColumn='tg_user_id', intermediateTable='course_tg_user')
 	viewcount = IntCol(default=0)
+	crosslinks = RelatedJoin('CrossLink')
 
 # Department: id, abbr, name
 class Department(SQLObject):
 	abbr = UnicodeCol(length = 4)
 	name = UnicodeCol(length = 255)
+
+# CrossLink!!!!!!111!1: id, description, courses, creator
+class CrossLink(SQLObject):
+	description = UnicodeCol()
+	courses = RelatedJoin('Course')
+	creator = ForeignKey('User')
+	created = DateTimeCol(default=datetime.now)
 
 # the identity model
 
@@ -143,6 +151,8 @@ class User(SQLObject):
 	admin = BoolCol(default=False)
 
 	about_me = UnicodeCol(default='')
+	
+	crosslinks = MultipleJoin('CrossLink', joinColumn='creator_id')
 	
 	# groups this user belongs to
 	groups = RelatedJoin('Group', intermediateTable='user_group',

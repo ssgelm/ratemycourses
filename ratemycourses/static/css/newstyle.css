@@ -52,7 +52,7 @@ body.whitebg {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-khtml-border-radius: 5px;
-	border-radius: 5px;
+	-border-radius: 5px;
 }
 
 #header h1 {
@@ -211,11 +211,11 @@ p { margin-left: 1em; }
   min-height: 50px;
   width: 450px;
   font-weight: bolder;
-  vertical-align: center;
+  vertical-align: middle;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   -khtml-border-radius: 5px;
-  border-radius: 5px;
+  -border-radius: 5px;
   position: relative;
 }
 #flash2 .error {
@@ -273,7 +273,7 @@ div#avgRating img {
 }
 
 a.tag {
-    border-radius: 7px;
+    -border-radius: 7px;
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
     background-color: lightSteelBlue;
@@ -287,7 +287,7 @@ span.tag {
 }
 
 a.addtag {
-    border-radius: 7px;
+    -border-radius: 7px;
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
     background-color: lightSteelBlue;
@@ -324,7 +324,7 @@ img.vote {
 
 div.orientation {
     margin: 10px;
-    border-radius: 10% 10% 10% 0;
+    -border-radius: 10% 10% 10% 0;
     -moz-border-radius: 10% 10% 10% 0;
     -webkit-border-radius: 10% 10% 10% 0;
     background-color: SlateGray;
@@ -334,7 +334,7 @@ div.orientation {
 
 div.orientation div.question {
     margin: 0;
-    border-radius: 10% 10% 0 0;
+    -border-radius: 10% 10% 0 0;
     -moz-border-radius: 10% 10% 0 0;
     -webkit-border-radius: 10% 10% 0 0;
     background-color: black;
@@ -347,10 +347,35 @@ div.orientation a.answer {
     clear: both;
     width: 80%;
     margin: 10px auto;
-    border-radius: 10%;
+    -border-radius: 10%;
     -moz-border-radius: 10%;
     -webkit-border-radius: 10%;
     background-color: white;
     padding: 5px;
     text-align: center;
+}
+
+.hint {
+	cursor:help;
+}
+
+.tip {
+	border:1px solid #1B75DF;
+	color:#000000;
+	width:300px;
+}
+
+.tip-title {
+	background-color:#DFEEFF;
+	color:#1B75DF;
+	font-size:11px;
+	font-weight:bold;
+	margin:0;
+	padding:8px 8px 4px;
+}
+
+.tip-text {
+	background-color:#DFEEFF;
+	font-size:11px;
+	padding:4px 8px 8px;
 }
