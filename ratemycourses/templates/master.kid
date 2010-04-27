@@ -74,7 +74,7 @@ from cherrypy import session as cp_session
 
     <div id="footer">
         <p><b>Disclaimer:</b> This website is a demonstration of our term project for CS125: Human-Computer Interaction in Spring 2010. It is based on research of computer-supported collaboration and interface design. It is a work in progress and not all features will work as planned. We're working on it.</p>
-		<p><a href="/static/feedback.html" target="_blank">Questions/Comments? Click here</a>. &copy; 2010 Stephen Gelman, Ravi Kotecha, Andy Lewis, Kevin Weaver</p>
+		<p><a href="/static/feedback.html" target="_blank">Questions/Comments/Bugs? Click here</a>. &copy; 2010 Stephen Gelman, Ravi Kotecha, Andy Lewis, Kevin Weaver</p>
     </div>
 </body>
 
