@@ -41,10 +41,10 @@ class SoCosignIdentityProvider(SqlObjectIdentityProvider):
 					email_address = user_name+"@brandeis.edu"
 					try:
 						display_name=objects[0][1]['cn'][2]
-					except IndexError:
+					except (IndexError, KeyError):
 						try:
 							display_name=objects[0][1]['cn'][0]
-						except IndexError:
+						except (IndexError, KeyError):
 							display_name=user_name
 					user = User(user_name=user_name, display_name=display_name, email_address=email_address)
 				else:
